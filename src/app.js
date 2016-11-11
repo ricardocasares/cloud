@@ -1,6 +1,8 @@
 var fb = require('firebase/app')
 var db = require('firebase/database')
 var ago = require('from-now')
+var cfg = require('./config')
+var formData = require('get-form-data')
 var app = fb.initializeApp({
   apiKey: 'AIzaSyDt7QEPed9zKn-dzuVXWWihn88ZRS3vXS0',
   authDomain: 'cloud-96b9f.firebaseapp.com',
@@ -9,7 +11,7 @@ var app = fb.initializeApp({
   messagingSenderId: '914472583546'
 })
 
-var container = document.querySelector('.container')
+var container = document.querySelector('.bubbles')
 
 var posts = app
   .database()
@@ -18,31 +20,36 @@ var posts = app
 posts.on('child_added', onPost)
 
 function onPost (snt) {
-  container.insertBefore(createPost(snt.val()), container.firstChild)
+  container.insertBefore(createNode(snt.val()), container.firstChild)
 }
 
-function createPost (post) {
+function createNode (post) {
   var el = document.createElement('div')
   var msg = document.createElement('p')
   var meta = document.createElement('p')
-  console.log(post)
   el.setAttribute('class', 'bubble')
   meta.setAttribute('class', 'metadata')
   msg.innerText = post.msg
-  meta.innerText = `${ago(post.created)} by ${post.name}`
+  meta.innerText = `${ago(post.created, cfg.ago)} by ${post.name}`
   el.appendChild(msg)
   el.appendChild(meta)
 
   return el
 }
 
-function postMessage (name, msg) {
+function createPost (post) {
   var now = new Date()
   posts.push({
-    msg: msg,
-    name: name || 'Anonymous',
+    msg: post.msg,
+    name: post.name || 'Anonymous',
     created: now.getTime()
   })
 }
 
-window.post = postMessage
+function onSubmit () {
+  var form = document.querySelector('#post')
+  var data = formData(form)
+  createPost(data)
+}
+
+window.onSubmit = onSubmit

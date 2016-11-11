@@ -2,13 +2,24 @@
     <head>
       <title>Cloud</title>
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
       <style>
         body {
           margin: 0;
-          padding-top: 100px;
-          font-size: 1.5rem;
+          padding-top: 20px;
           background: url('http://www.coryarcangel.com/images/artwork/arcangel-super-mario-clouds.gif');
+        }
+
+        .form {
+          background: #fff;
+          padding: 15px;
+          border-radius: 5px;
+          margin-bottom: 20px;
+        }
+
+        .form h2 {
+          margin: 0;
+          margin-bottom: 10px;
         }
 
         .bubble {
@@ -23,12 +34,37 @@
 
         .metadata {
           color: #777;
-          font-size: 1rem;
         }
       </style>
     </head>
     <body>
-        <div class="container"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form">
+                <h2>Share your thoughts</h2>
+                <form id="post" style="display: block;">
+                  <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                    <p class="help-block">This field is optional.</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="msg">Post</label>
+                    <textarea id="msg" name="msg" class="form-control"></textarea>
+                    <p class="help-block">Leave your thougths here.</p>
+                  </div>
+                  <button type="button" class="btn btn-default" onclick="onSubmit()">Submit</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="bubbles"></div>
+            </div>
+          </div>
+        </div>
         <script src="/bundle.js"></script>
     </body>
 </html>

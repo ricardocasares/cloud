@@ -56,7 +56,7 @@ module.exports = function deepAssign(target) {
 	return target;
 };
 
-},{"is-obj":5}],2:[function(require,module,exports){
+},{"is-obj":6}],2:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.6.0
     Build: 3.6.0-rc.3
@@ -461,15 +461,202 @@ module.exports = function (date, opts) {
 
 },{"deep-assign":1}],5:[function(require,module,exports){
 'use strict';
+
+exports.__esModule = true;
+var NODE_LIST_CLASSES = {
+  '[object HTMLCollection]': true,
+  '[object NodeList]': true,
+  '[object RadioNodeList]': true
+};
+
+// .type values for elements which can appear in .elements and should be ignored
+var IGNORED_ELEMENT_TYPES = {
+  'button': true,
+  'fieldset': true,
+  // 'keygen': true,
+  // 'output': true,
+  'reset': true,
+  'submit': true
+};
+
+var CHECKED_INPUT_TYPES = {
+  'checkbox': true,
+  'radio': true
+};
+
+var TRIM_RE = /^\s+|\s+$/g;
+
+var slice = Array.prototype.slice;
+var toString = Object.prototype.toString;
+
+/**
+ * @param {HTMLFormElement} form
+ * @param {Object} options
+ * @return {Object.<string,(string|Array.<string>)>} an object containing
+ *   submittable value(s) held in the form's .elements collection, with
+ *   properties named as per element names or ids.
+ */
+function getFormData(form) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? { trim: false } : arguments[1];
+
+  if (!form) {
+    throw new Error('A form is required by getFormData, was given form=' + form);
+  }
+
+  var data = {};
+  var elementName = undefined;
+  var elementNames = [];
+  var elementNameLookup = {};
+
+  // Get unique submittable element names for the form
+  for (var i = 0, l = form.elements.length; i < l; i++) {
+    var element = form.elements[i];
+    if (IGNORED_ELEMENT_TYPES[element.type] || element.disabled) {
+      continue;
+    }
+    elementName = element.name || element.id;
+    if (elementName && !elementNameLookup[elementName]) {
+      elementNames.push(elementName);
+      elementNameLookup[elementName] = true;
+    }
+  }
+
+  // Extract element data name-by-name for consistent handling of special cases
+  // around elements which contain multiple inputs.
+  for (var i = 0, l = elementNames.length; i < l; i++) {
+    elementName = elementNames[i];
+    var value = getNamedFormElementData(form, elementName, options);
+    if (value != null) {
+      data[elementName] = value;
+    }
+  }
+
+  return data;
+}
+
+/**
+ * @param {HTMLFormElement} form
+ * @param {string} elementName
+ * @param {Object} options
+ * @return {(string|Array.<string>)} submittable value(s) in the form for a
+ *   named element from its .elements collection, or null if there was no
+ *   element with that name or the element had no submittable value(s).
+ */
+function getNamedFormElementData(form, elementName) {
+  var options = arguments.length <= 2 || arguments[2] === undefined ? { trim: false } : arguments[2];
+
+  if (!form) {
+    throw new Error('A form is required by getNamedFormElementData, was given form=' + form);
+  }
+  if (!elementName && toString.call(elementName) !== '[object String]') {
+    throw new Error('A form element name is required by getNamedFormElementData, was given elementName=' + elementName);
+  }
+
+  var element = form.elements[elementName];
+  if (!element || element.disabled) {
+    return null;
+  }
+
+  if (!NODE_LIST_CLASSES[toString.call(element)]) {
+    return getFormElementValue(element, options.trim);
+  }
+
+  // Deal with multiple form controls which have the same name
+  var data = [];
+  var allRadios = true;
+  for (var i = 0, l = element.length; i < l; i++) {
+    if (element[i].disabled) {
+      continue;
+    }
+    if (allRadios && element[i].type !== 'radio') {
+      allRadios = false;
+    }
+    var value = getFormElementValue(element[i], options.trim);
+    if (value != null) {
+      data = data.concat(value);
+    }
+  }
+
+  // Special case for an element with multiple same-named inputs which were all
+  // radio buttons: if there was a selected value, only return the value.
+  if (allRadios && data.length === 1) {
+    return data[0];
+  }
+
+  return data.length > 0 ? data : null;
+}
+
+/**
+ * @param {HTMLElement} element a form element.
+ * @param {booleam} trim should values for text entry inputs be trimmed?
+ * @return {(string|Array.<string>|File|Array.<File>)} the element's submittable
+ *   value(s), or null if it had none.
+ */
+function getFormElementValue(element, trim) {
+  var value = null;
+  var type = element.type;
+
+  if (type === 'select-one') {
+    if (element.options.length) {
+      value = element.options[element.selectedIndex].value;
+    }
+    return value;
+  }
+
+  if (type === 'select-multiple') {
+    value = [];
+    for (var i = 0, l = element.options.length; i < l; i++) {
+      if (element.options[i].selected) {
+        value.push(element.options[i].value);
+      }
+    }
+    if (value.length === 0) {
+      value = null;
+    }
+    return value;
+  }
+
+  // If a file input doesn't have a files attribute, fall through to using its
+  // value attribute.
+  if (type === 'file' && 'files' in element) {
+    if (element.multiple) {
+      value = slice.call(element.files);
+      if (value.length === 0) {
+        value = null;
+      }
+    } else {
+      // Should be null if not present, according to the spec
+      value = element.files[0];
+    }
+    return value;
+  }
+
+  if (!CHECKED_INPUT_TYPES[type]) {
+    value = trim ? element.value.replace(TRIM_RE, '') : element.value;
+  } else if (element.checked) {
+    value = element.value;
+  }
+
+  return value;
+}
+
+getFormData.getNamedFormElementData = getNamedFormElementData;
+
+exports['default'] = getFormData;
+module.exports = exports['default'];
+},{}],6:[function(require,module,exports){
+'use strict';
 module.exports = function (x) {
 	var type = typeof x;
 	return x !== null && (type === 'object' || type === 'function');
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var fb = require('firebase/app')
 var db = require('firebase/database')
 var ago = require('from-now')
+var cfg = require('./config')
+var formData = require('get-form-data')
 var app = fb.initializeApp({
   apiKey: 'AIzaSyDt7QEPed9zKn-dzuVXWWihn88ZRS3vXS0',
   authDomain: 'cloud-96b9f.firebaseapp.com',
@@ -478,7 +665,7 @@ var app = fb.initializeApp({
   messagingSenderId: '914472583546'
 })
 
-var container = document.querySelector('.container')
+var container = document.querySelector('.bubbles')
 
 var posts = app
   .database()
@@ -487,33 +674,71 @@ var posts = app
 posts.on('child_added', onPost)
 
 function onPost (snt) {
-  container.insertBefore(createPost(snt.val()), container.firstChild)
+  container.insertBefore(createNode(snt.val()), container.firstChild)
 }
 
-function createPost (post) {
+function createNode (post) {
   var el = document.createElement('div')
   var msg = document.createElement('p')
   var meta = document.createElement('p')
-  console.log(post)
   el.setAttribute('class', 'bubble')
   meta.setAttribute('class', 'metadata')
   msg.innerText = post.msg
-  meta.innerText = `${ago(post.created)} by ${post.name}`
+  meta.innerText = `${ago(post.created, cfg.ago)} by ${post.name}`
   el.appendChild(msg)
   el.appendChild(meta)
 
   return el
 }
 
-function postMessage (name, msg) {
+function createPost (post) {
   var now = new Date()
   posts.push({
-    msg: msg,
-    name: name || 'Anonymous',
+    msg: post.msg,
+    name: post.name || 'Anonymous',
     created: now.getTime()
   })
 }
 
-window.post = postMessage
+function onSubmit () {
+  var form = document.querySelector('#post')
+  var data = formData(form)
+  createPost(data)
+}
 
-},{"firebase/app":2,"firebase/database":3,"from-now":4}]},{},[6]);
+window.onSubmit = onSubmit
+},{"./config":8,"firebase/app":2,"firebase/database":3,"from-now":4,"get-form-data":5}],8:[function(require,module,exports){
+module.exports = {
+    ago: {
+        'now': 'just now',
+        'seconds': {
+            1: 'second ago',
+            2: 'seconds ago'
+        },
+        'minutes': {
+            1: 'minute ago',
+            2: 'minutes ago'
+        },
+        'hours': {
+            1: 'hour ago',
+            2: 'hours'
+        },
+        'days': {
+            1: 'day ago',
+            2: 'days ago'
+        },
+        'weeks': {
+            1: 'week ago',
+            2: 'weeks ago'
+        },
+        'months': {
+            1: 'month ago',
+            2: 'months'
+        },
+        'years': {
+            1: 'year ago',
+            2: 'years ago'
+        }
+    }
+}
+},{}]},{},[7]);
