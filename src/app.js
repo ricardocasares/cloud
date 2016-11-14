@@ -12,6 +12,7 @@ var app = fb.initializeApp({
   messagingSenderId: '914472583546'
 })
 
+
 var container = document.querySelector('.bubbles')
 
 var posts = app
@@ -21,7 +22,7 @@ var posts = app
 posts.on('child_added', queue)
 
 function queue (snap) {
-  var fn = () => onPost(snap)
+  var fn = function () { onPost(snap) }
   q.push(fn)
 }
 
