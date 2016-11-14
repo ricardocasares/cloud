@@ -37,9 +37,9 @@ function createNode (post) {
   var msg = document.createElement('p')
   var meta = document.createElement('p')
 
-  el.setAttribute('class', 'bubble')
   msg.setAttribute('class', 'msg')
   meta.setAttribute('class', 'metadata')
+  el.setAttribute('class', 'bubble float')
 
   msg.innerText = post.msg
   meta.innerText = [ago(post.created, cfg.ago), 'by', post.name].join(' ')
@@ -52,6 +52,8 @@ function createNode (post) {
 
 function createPost (post) {
   var now = new Date()
+
+  post.name = post.name || 'Anonymous'
   post.created = now.getTime()
 
   return posts.push(post)
