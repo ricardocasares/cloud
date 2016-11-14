@@ -52,12 +52,9 @@ function createNode (post) {
 
 function createPost (post) {
   var now = new Date()
+  post.created = now.getTime()
 
-  return posts.push({
-    msg: post.msg,
-    name: post.name || 'Anonymous',
-    created: now.getTime()
-  })
+  return posts.push(post)
 }
 
 function onSubmit () {
