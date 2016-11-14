@@ -4,13 +4,7 @@ var db = require('firebase/database')
 var ago = require('from-now')
 var cfg = require('./config')
 var formData = require('get-form-data')
-var app = fb.initializeApp({
-  apiKey: 'AIzaSyDt7QEPed9zKn-dzuVXWWihn88ZRS3vXS0',
-  authDomain: 'cloud-96b9f.firebaseapp.com',
-  databaseURL: 'https://cloud-96b9f.firebaseio.com',
-  storageBucket: 'cloud-96b9f.appspot.com',
-  messagingSenderId: '914472583546'
-})
+var app = fb.initializeApp(cfg.firebase)
 
 
 var container = document.querySelector('.bubbles')
