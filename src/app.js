@@ -1,3 +1,4 @@
+var q = []
 var fb = require('firebase/app')
 var db = require('firebase/database')
 var ago = require('from-now')
@@ -17,20 +18,37 @@ var posts = app
   .database()
   .ref('posts')
 
-posts.on('child_added', onPost)
+posts.on('child_added', queue)
 
-function onPost (snt) {
-  container.insertBefore(createNode(snt.val()), container.firstChild)
+function queue (snap) {
+  var fn = () => onPost(snap)
+  q.push(fn)
+}
+
+function process () {
+  if (!q.length) return
+  q.shift()()
+}
+
+setInterval(process, 5000)
+
+function onPost (snap) {
+  var node = createNode(snap.val())
+  container.insertBefore(node, container.firstChild)
 }
 
 function createNode (post) {
   var el = document.createElement('div')
   var msg = document.createElement('p')
   var meta = document.createElement('p')
+
   el.setAttribute('class', 'bubble')
+  msg.setAttribute('class', 'msg')
   meta.setAttribute('class', 'metadata')
+
   msg.innerText = post.msg
-  meta.innerText = `${ago(post.created, cfg.ago)} by ${post.name}`
+  meta.innerText = [ago(post.created, cfg.ago), 'by', post.name].join(' ')
+
   el.appendChild(msg)
   el.appendChild(meta)
 
@@ -39,7 +57,8 @@ function createNode (post) {
 
 function createPost (post) {
   var now = new Date()
-  posts.push({
+
+  return posts.push({
     msg: post.msg,
     name: post.name || 'Anonymous',
     created: now.getTime()
@@ -47,8 +66,23 @@ function createPost (post) {
 }
 
 function onSubmit () {
+  var msg = document.querySelector('#msg')
   var form = document.querySelector('#post')
+  var name = document.querySelector('#name')
+  var valid = document.querySelector('.post')
+  var email = document.querySelector('#email')
   var data = formData(form)
+
+  if (msg.value === '') {
+    valid.classList.add('has-error')
+    return undefined
+  } else {
+    valid.classList.remove('has-error')
+  }
+
+  msg.value = ''
+  name.value = ''
+  email.value = ''
   createPost(data)
 }
 

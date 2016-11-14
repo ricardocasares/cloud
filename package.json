@@ -11,6 +11,6 @@
   "dependencies": {
     "firebase": "^3.6.0",
     "from-now": "^1.0.2",
-    "get-form-data": "^1.2.5"
+    "get-form-data": "^1.2.5",
   }
 }

@@ -1,0 +1,129 @@
+body {
+  margin: 0;
+  padding-top: 120px;
+  background: #3fbfff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.qr {
+  color: #fff;
+}
+
+.qr img {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.form {
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.form h2 {
+  margin: 0;
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 1.4em;
+}
+
+.bubble {
+  background: #fff;
+  border-radius: 100px;
+  padding: 50px;
+  position: relative;
+  margin-bottom: 100px;
+  text-align: center;
+  animation: enter 1s;
+}
+
+.bubble::before,
+.bubble::after {
+  background: #fff;
+  border-radius: 100%;
+  width: 220px;
+  height: 220px;
+  z-index: -1;
+  display: block;
+  content: '';
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  position: absolute;
+}
+
+.bubble::after {
+  width: 300px;
+  height: 300px;
+  left: 70%;
+  transform: translateY(-50%, -30%);
+}
+
+.bubble:nth-child(even)::after {
+  width: 300px;
+  height: 300px;
+  left: 30%;
+  transform: translateY(-50%, -70%);
+}
+
+.msg {
+  font-size: 1.2em;
+}
+
+.metadata {
+  color: #777;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.form-control,
+.btn-hollow,
+.btn-hollow:hover {
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.form-control:focus {
+  border-color: #337ab7;
+  box-shadow: none;
+}
+
+label,
+.help-block {
+  color: #fff;
+}
+
+.btn-hollow:hover,
+.btn-hollow:focus {
+  background: transparent;
+  border-color: #337ab7;
+  color: #337ab7;
+  box-shadow: none;
+  outline: none;
+}
+
+@media (max-width: 1200px) {
+  body {
+    padding-top: 20px;
+  }
+
+  .bubble {
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+
+  .bubble::before,
+  .bubble::after {
+    display: none;
+  }
+}
+
+@keyframes enter {
+    from {
+      opacity: 0;
+    }
+    to{
+      opacity: 1;
+    }
+}
