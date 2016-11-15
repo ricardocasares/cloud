@@ -30,7 +30,7 @@ function process () {
 
 function attention () {
   qr.classList.add('tada')
-  setTimeout(() => qr.classList.remove('tada'), 1000)
+  setTimeout(function () { qr.classList.remove('tada') }, 1000)
 }
 
 function onPost (snap) {
