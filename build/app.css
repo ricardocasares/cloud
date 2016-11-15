@@ -14,6 +14,7 @@ body {
 
 .qr {
   color: #fff;
+  font-size: 2rem;
 }
 
 .qr img {
@@ -30,7 +31,11 @@ body {
   margin: 0;
   margin-bottom: 10px;
   color: #fff;
-  font-size: 1.4em;
+  font-size: 1.4rem;
+}
+
+.tada {
+  animation: tada 1s infinite;
 }
 
 .float {
@@ -147,4 +152,26 @@ label,
     to {
       transform: scale(1.0);
     }
+}
+
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%, 20% {
+    transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%, 50%, 70%, 90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%, 60%, 80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }

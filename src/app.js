@@ -1,4 +1,3 @@
-var q = []
 var fb = require('firebase/app')
 var db = require('firebase/database')
 var ago = require('from-now')
@@ -6,8 +5,12 @@ var cfg = require('./config')
 var formData = require('get-form-data')
 var app = fb.initializeApp(cfg.firebase)
 
-
+var q = []
+var qr = document.querySelector('.qr img')
 var container = document.querySelector('.bubbles')
+
+setInterval(process, 5000)
+setInterval(attention, 15000)
 
 var posts = app
   .database()
@@ -25,7 +28,10 @@ function process () {
   q.shift()()
 }
 
-setInterval(process, 5000)
+function attention () {
+  qr.classList.add('tada')
+  setTimeout(() => qr.classList.remove('tada'), 1000)
+}
 
 function onPost (snap) {
   var node = createNode(snap.val())
