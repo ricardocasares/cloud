@@ -10,6 +10,11 @@ body {
   font-size: 2rem;
 }
 
+.text-muted {
+  font-size: 1.5rem;
+  color: #245782;
+}
+
 .qr img {
   width: 100%;
   margin-bottom: 20px;

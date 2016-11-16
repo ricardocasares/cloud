@@ -59,7 +59,7 @@ function createNode (post) {
 function createPost (post) {
   var now = new Date()
 
-  post.name = post.name || 'Anonymous'
+  post.name = post.name || 'Anonim / Anonymous'
   post.created = now.getTime()
 
   return posts.push(post)
