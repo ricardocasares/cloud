@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify src/app.js | uglifyjs > build/bundle.js",
-    "deploy": "surge build/ gosia-cloud.surge.sh",
+    "deploy": "surge build/ myslinasztuki.com",
     "predeploy": "npm run build",
     "dev": "watchify src/app.js -o build/bundle.js --debug --v & npm run bs",
     "bs": "browser-sync start -s build -f 'build/**/*' --no-notify"
