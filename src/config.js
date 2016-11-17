@@ -5,6 +5,12 @@ module.exports = {
     databaseURL: 'https://cloud-96b9f.firebaseio.com',
     storageBucket: 'cloud-96b9f.appspot.com',
     messagingSenderId: '914472583546'
+    // TEST
+    // apiKey: "AIzaSyAaHTRpo4rkwP65yrXhHWgmxC-FxWEvy3k",
+    // authDomain: "hipsteroids.firebaseapp.com",
+    // databaseURL: "https://hipsteroids.firebaseio.com",
+    // storageBucket: "hipsteroids.appspot.com",
+    // messagingSenderId: "133945386697"
   },
   ago: {
     'now': 'just now',

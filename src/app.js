@@ -16,7 +16,9 @@ var posts = app
   .database()
   .ref('posts')
 
-posts.on('child_added', queue)
+posts
+  .limitToLast(150)
+  .on('child_added', queue)
 
 function queue (snap) {
   var fn = function () { onPost(snap) }
@@ -29,6 +31,7 @@ function process () {
 }
 
 function attention () {
+  if (!qr) return
   qr.classList.add('tada')
   setTimeout(function () { qr.classList.remove('tada') }, 1000)
 }
