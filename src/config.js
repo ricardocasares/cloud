@@ -18,7 +18,7 @@ module.exports = {
     },
     'hours': {
       1: 'hour ago',
-      2: 'hours'
+      2: 'hours ago'
     },
     'days': {
       1: 'day ago',
